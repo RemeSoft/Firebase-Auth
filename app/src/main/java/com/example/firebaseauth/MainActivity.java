@@ -53,26 +53,31 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userRegister();
+                loginUser();
             }
         });
 
     }
 
-    private void userRegister() {
-        String email__text = email.getText().toString().trim();
-        String password__text = password.getText().toString().trim();
+    private void loginUser() {
+        String entered__email = email.getText().toString();
+        String entered__password = password.getText().toString();
 
-        mAuth.createUserWithEmailAndPassword(email__text,password__text).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithEmailAndPassword(entered__email,entered__password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
-                    Toast.makeText(MainActivity.this, "Register Successful", Toast.LENGTH_SHORT).show();
+                if(task.isSuccessful()){
+                    finish();
+                    Intent intent = new Intent(getApplicationContext(),ProfilePage.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }else{
-                    Toast.makeText(MainActivity.this, "Register Failed!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Login Failed!!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
 }
+
+// Learned Form : https://youtu.be/E3KbPoSofpw

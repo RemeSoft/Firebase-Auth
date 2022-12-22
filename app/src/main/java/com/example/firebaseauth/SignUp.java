@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class SignUp extends AppCompatActivity {
 
@@ -58,16 +59,24 @@ public class SignUp extends AppCompatActivity {
 
     }
     private void userRegister() {
-        String email__text = email.getText().toString().trim();
-        String password__text = password.getText().toString().trim();
+        String entered__email = email.getText().toString().trim();
+        String entered__password = password.getText().toString().trim();
 
-        mAuth.createUserWithEmailAndPassword(email__text,password__text).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.createUserWithEmailAndPassword(entered__email,entered__password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
-                    Toast.makeText(SignUp.this, "Register Successful", Toast.LENGTH_SHORT).show();
+                    finish(); // It Helps Us to Finish Activity.
+                    Intent intent = new Intent(getApplicationContext(),ProfilePage.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }else{
-                    Toast.makeText(SignUp.this, "Register Failed!!", Toast.LENGTH_SHORT).show();
+                    // If User is Already Registered.
+                    if(task.getException() instanceof FirebaseAuthUserCollisionException){
+                        Toast.makeText(SignUp.this, "User is Already Registered.", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(SignUp.this, "Register Failed!!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -75,4 +84,3 @@ public class SignUp extends AppCompatActivity {
     }
 }
 
-// Learned Form : https://youtu.be/E3KbPoSofpw
